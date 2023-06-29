@@ -1,4 +1,4 @@
-# Python-screenshot-to-text-converter
+# Python-screenshot-to-text-converter v2.0
 
 It takes time to start due to the easyocr module for image to text convertion
 
