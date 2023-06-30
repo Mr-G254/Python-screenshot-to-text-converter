@@ -1,12 +1,14 @@
 from customtkinter import*
 from PIL import Image,ImageGrab
+from time import sleep
 
 class Selection_window():
     def __init__(self,app):
         self.App = app
 
     def create_window(self):
-        self.Window = CTkToplevel(fg_color="White")
+        self.App.iconify()
+        self.Window = CTkToplevel(self.App,fg_color="White")
         self.Window.state("zoomed")
         self.Window.overrideredirect(True)
         self.Window.wm_attributes("-alpha",0.2)
@@ -28,6 +30,7 @@ class Selection_window():
         self.rect = self.canvas.create_rectangle(event.x,event.y,event.x,event.y,width=3) 
 
         self.canvas.bind('<Motion>',lambda event: self.resize_area(event)) 
+        self.canvas.bind('<Return>',lambda event: self.get_screenshot(event))
 
     def resize_area(self,event):
         self.canvas.coords(self.rect,self.x_pos,self.y_pos,event.x,event.y)
@@ -42,6 +45,20 @@ class Selection_window():
         
     def delete_selected_area(self):
         self.canvas.delete(self.rect)
+
+    def get_screenshot(self,event):
+        if self.canvas.coords(self.rect):
+            self.coordinates = self.canvas.coords(self.rect)
+            self.Window.destroy()
+            self.App.iconify()
+
+            sleep(1)
+
+            self.screenshot = ImageGrab.grab()
+            self.crop = self.screenshot.crop(self.coordinates)
+            self.crop.save("image.png")
+
+            self.App.deiconifiy()
 
     def exit(self,event):
         self.Window.destroy()
