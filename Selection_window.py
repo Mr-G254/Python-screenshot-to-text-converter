@@ -1,4 +1,5 @@
 from customtkinter import*
+from tkinter import*
 from PIL import Image,ImageGrab
 from time import sleep
 
@@ -15,8 +16,8 @@ class Selection_window():
         self.Window.grab_set()
         self.Window.bind('<Escape>',lambda event: self.exit(event))
 
-        self.canvas = CTkCanvas(self.Window,height=self.Window.winfo_height(),width=self.Window.winfo_width())
-        self.canvas.place(x=0,y=0)
+        self.canvas = Canvas(self.Window,height=self.Window.winfo_height(),width=self.Window.winfo_width())
+        self.canvas.pack()
         self.canvas.bind('<Button-1>',lambda event: self.select_area(event))
 
         self.App.iconify()
@@ -29,6 +30,7 @@ class Selection_window():
         self.y_pos = event.y
         self.rect = self.canvas.create_rectangle(event.x,event.y,event.x,event.y,width=3) 
 
+        self.canvas.focus_set()
         self.canvas.bind('<Motion>',lambda event: self.resize_area(event)) 
         self.canvas.bind('<Return>',lambda event: self.get_screenshot(event))
 
@@ -47,18 +49,19 @@ class Selection_window():
         self.canvas.delete(self.rect)
 
     def get_screenshot(self,event):
-        if self.canvas.coords(self.rect):
+        if self.canvas.coords(self.rect) != []:
             self.coordinates = self.canvas.coords(self.rect)
+            print(self.coordinates)
             self.Window.destroy()
             self.App.iconify()
 
-            sleep(1)
+            sleep(0.5)
 
             self.screenshot = ImageGrab.grab()
             self.crop = self.screenshot.crop(self.coordinates)
             self.crop.save("image.png")
 
-            self.App.deiconifiy()
+            self.App.deiconify()
 
     def exit(self,event):
         self.Window.destroy()
