@@ -3,7 +3,7 @@ from tkinter import*
 from PIL import Image,ImageGrab
 from time import sleep
 
-class Selection_window():
+class Screenshot():
     def __init__(self,app):
         self.App = app
 

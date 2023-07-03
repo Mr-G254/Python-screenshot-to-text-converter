@@ -1,10 +1,7 @@
-# Python-screenshot-to-text-converter v2.0
+# Lyrics Editor v1.0
+Python-screenshot-to-text-converter will be rebuilt to Lyrics Editor v1.0 with some additional features including a better User Interface. Feel free to air your suggestions through the email below.
 
-It takes time to start due to the easyocr module for image to text convertion
-
-After the white screen appears left click or tap on the touchpad to start selecting the area you want to capture.
-Move the cursor to display a box with a black border (This is the part that gets captured).
-To cancel the selection press ESC and then left click restart the selection.
+Since the project is not complete run the 'Screenshot -to-text.py' file. 
 
 Contact: Gikuhiezekiel@gmail.com
 
