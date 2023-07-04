@@ -1,4 +1,5 @@
 from customtkinter import*
+from tkinter import ttk
 from PIL import Image
 from Windows import Image_Frame
 
@@ -6,7 +7,7 @@ class Main_Window():
     def __init__(self):       
         self.App = CTk()
         self.App.title("Lyrics Editor")
-        self.App.geometry('900x500+250+100')
+        self.App.geometry('1100x600+125+70')
         self.App.resizable(False,False)
 
         self.img0 = CTkImage(Image.open("Icons\home.png"),size=(26,26))
@@ -15,14 +16,16 @@ class Main_Window():
         self.img2 = CTkImage(Image.open("Icons\music.png"),size=(26,26))
         self.img2a = CTkImage(Image.open("Icons\music.png"),size=(128,128))
         self.img3 = CTkImage(Image.open("Icons\close.png"),size=(26,26))
+        self.img4 = CTkImage(Image.open("Icons\\backup.png"),size=(128,128))
+        self.img5 = CTkImage(Image.open("Icons\\restore.png"),size=(128,128))
 
         self.menu_buttons = []
         self.frames = []
 
-        self.Frame = CTkFrame(self.App,width=900,height=500,fg_color="#58001D",corner_radius=0) # "#4F0018"
+        self.Frame = CTkFrame(self.App,width=1100,height=600,fg_color="#58001D",corner_radius=0) # "#4F0018"
         self.Frame.place(x=0,y=0)
 
-        self.menubar = CTkFrame(self.Frame,width=45,height=500,fg_color="#790028",corner_radius=0)
+        self.menubar = CTkFrame(self.Frame,width=45,height=600,fg_color="#790028",corner_radius=0)
         self.menubar.place(x=0,y=0)
 
         self.home = CTkButton(self.menubar,width=44,height=45,text="",fg_color="#58001D",corner_radius=0,image=self.img0,hover_color="#A00035",state=DISABLED,command= lambda: [self.select_button(self.home),self.home_button()])
@@ -38,13 +41,18 @@ class Main_Window():
         self.menu_buttons.append(self.lyric)
 
         self.exit = CTkButton(self.menubar,width=44,height=45,text="",fg_color="#790028",corner_radius=0,image=self.img3,hover_color="#A00035",command= lambda: self.App.destroy())
-        self.exit.place(x=0,y=456)
+        self.exit.place(x=0,y=556)
+
+        ###################################################################################################################################################################################################################################################
 
         self.text = CTkLabel(self.Frame,height=80,width=600,text="Lyrics Editor",font=('Times',32),fg_color="#58001D")
-        self.text.place(x=125,y=0)
+        self.text.place(x=250,y=0)
+
+        self.sep = ttk.Separator(self.Frame,orient=HORIZONTAL)
+        self.sep.place(x=250,y=70,width=600,height=1)
 
         self.image_frame = CTkFrame(self.Frame,width=250,height=170,corner_radius=7,fg_color="#790028")
-        self.image_frame.place(x=100,y=100)
+        self.image_frame.place(x=165,y=100)
         self.image_frame.bind('<Enter>',lambda event: self.highlight_tool(event,self.image_frame))
         self.image_frame.bind('<Leave>',lambda event: self.unhighlight_tool(event,self.image_frame))
 
@@ -59,7 +67,7 @@ class Main_Window():
         self.text_1.bind('<Leave>',lambda event: self.unhighlight_tool(event,self.image_frame))
 
         self.lyric_frame = CTkFrame(self.Frame,width=250,height=170,corner_radius=7,fg_color="#790028")
-        self.lyric_frame.place(x=360,y=100)
+        self.lyric_frame.place(x=425,y=100)
         self.lyric_frame.bind('<Enter>',lambda event: self.highlight_tool(event,self.lyric_frame))
         self.lyric_frame.bind('<Leave>',lambda event: self.unhighlight_tool(event,self.lyric_frame))
 
@@ -72,6 +80,36 @@ class Main_Window():
         self.text_2.place(x=10,y=140)
         self.text_2.bind('<Enter>',lambda event: self.highlight_tool(event,self.lyric_frame))
         self.text_2.bind('<Leave>',lambda event: self.unhighlight_tool(event,self.lyric_frame))
+
+        self.backup_frame = CTkFrame(self.Frame,width=250,height=170,corner_radius=7,fg_color="#790028")
+        self.backup_frame.place(x=685,y=100)
+        self.backup_frame.bind('<Enter>',lambda event: self.highlight_tool(event,self.backup_frame))
+        self.backup_frame.bind('<Leave>',lambda event: self.unhighlight_tool(event,self.backup_frame))
+
+        self.image_3 = CTkLabel(self.backup_frame,image=self.img4,text="",fg_color="#790028")
+        self.image_3.place(x=60,y=5)
+        self.image_3.bind('<Enter>',lambda event: self.highlight_tool(event,self.backup_frame))
+        self.image_3.bind('<Leave>',lambda event: self.unhighlight_tool(event,self.backup_frame))
+
+        self.text_3 = CTkLabel(self.backup_frame,font=('Times',18),text="Backup",width=230,fg_color="#790028")
+        self.text_3.place(x=10,y=140)
+        self.text_3.bind('<Enter>',lambda event: self.highlight_tool(event,self.backup_frame))
+        self.text_3.bind('<Leave>',lambda event: self.unhighlight_tool(event,self.backup_frame))
+
+        self.restore_frame = CTkFrame(self.Frame,width=250,height=170,corner_radius=7,fg_color="#790028")
+        self.restore_frame.place(x=165,y=280)
+        self.restore_frame.bind('<Enter>',lambda event: self.highlight_tool(event,self.restore_frame))
+        self.restore_frame.bind('<Leave>',lambda event: self.unhighlight_tool(event,self.restore_frame))
+
+        self.image_4 = CTkLabel(self.restore_frame,image=self.img5,text="",fg_color="#790028")
+        self.image_4.place(x=60,y=5)
+        self.image_4.bind('<Enter>',lambda event: self.highlight_tool(event,self.restore_frame))
+        self.image_4.bind('<Leave>',lambda event: self.unhighlight_tool(event,self.restore_frame))
+
+        self.text_4 = CTkLabel(self.restore_frame,font=('Times',18),text="Restore",width=230,fg_color="#790028")
+        self.text_4.place(x=10,y=140)
+        self.text_4.bind('<Enter>',lambda event: self.highlight_tool(event,self.restore_frame))
+        self.text_4.bind('<Leave>',lambda event: self.unhighlight_tool(event,self.restore_frame))
 
         self.Img_Frame = Image_Frame(self.Frame)
         self.frames.append(self.Img_Frame)
