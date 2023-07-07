@@ -18,6 +18,9 @@ class Image_Frame():
 
         self.Row = 0
         self.Screenshot = Screenshot(app,self.add_image)
+        self.check_boxes = []
+        self.all_images = []
+        self.selected_images = []
 
         self.Frame = CTkFrame(self.master,width=1054,height=600,fg_color="#58001D",corner_radius=0)
 
@@ -35,6 +38,9 @@ class Image_Frame():
 
         self.text_1 = CTkLabel(self.frame_1,text="Images",width=390,height= 25,fg_color="#790028",font=('Times',18))
         self.text_1.place(x=5,y=5)
+
+        self.all = CTkCheckBox(self.frame_1,text="All",font=('Times',15),corner_radius=50,fg_color="#790028",height=25,checkbox_height=20,checkbox_width=20,onvalue='All',offvalue='None',command=lambda :self.select_all(self.all))
+        self.all.place(x=340,y=5)
 
         self.img_frame = CTkScrollableFrame(self.frame_1,width=370,height=455,fg_color="#4F0018",corner_radius=10)
         self.img_frame.place(x=2,y=33)
@@ -73,7 +79,6 @@ class Image_Frame():
         pc.copy(self.text_area.get(0.0,END))
         self.copy.configure(text="Copied")
 
-    
     def browse_file(self):
         self.file_location = filedialog.askopenfilenames(filetypes=[('PNG','.png'),('JPG','.jpg')]) 
         if self.file_location:
@@ -84,25 +89,48 @@ class Image_Frame():
     def get_screenshot(self):
         self.image = self.Screenshot.create_window()
 
-
     def add_image(self,image):
         self.width,self.height = image.size
         
-        if self.width > 360:
-            self.perc = ((self.width-360)/self.width)*100
+        if self.width > 340:
+            self.perc = ((self.width-340)/self.width)*100
 
-            self.width = 360
+            self.width = 340
             self.height = ((100-self.perc)/100)*self.height
 
-        self.img = CTkImage(image,size=(self.width,self.height))
+        img = CTkImage(image,size=(self.width,self.height))
+        self.all_images.append(img)
 
         self.image_frame = CTkFrame(self.img_frame,width=self.width,height=self.height,fg_color="#790028",corner_radius=0)
         self.image_frame.grid(row=self.Row,column=0,pady=5,padx=5)
 
-        self.image_label = CTkLabel(self.image_frame,image = self.img,text='')
+        self.image_label = CTkLabel(self.image_frame,image = img,text='')
         self.image_label.place(x=0,y=0)
 
-        self.check = CTkCheckBox(self.image_frame,height=30,width=30,corner_radius=50,text='')
-        self.check.place(x=(self.width-30),y=(self.height-30))
+        check = CTkCheckBox(self.img_frame,height=25,width=25,fg_color="#4F0018",checkbox_height=20,checkbox_width=20,corner_radius=50,text='',onvalue='on',offvalue='off')
+        check.configure(command=lambda check=check,img=img: self.select_image(check,img))
+        check.grid(row=self.Row,column=1,padx=0,)
+        self.check_boxes.append(check)
 
         self.Row= self.Row + 1
+
+    def select_all(self,button):
+        if button.get() == "All":
+            for i in self.check_boxes:
+                i.select()
+
+            for i in self.all_images:
+                if i not in self.selected_images:
+                    self.selected_images.append(i)
+
+        elif button.get() == "None":
+            for i in self.check_boxes:
+                i.deselect()
+
+            self.selected_images.clear()
+
+    def select_image(self,button,image):
+        if button.get() == 'on':
+            self.selected_images.append(image)
+        elif button.get() == 'off':
+            self.selected_images.remove(image)
