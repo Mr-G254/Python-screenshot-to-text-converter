@@ -4,8 +4,9 @@ from PIL import Image,ImageGrab
 from time import sleep
 
 class Screenshot():
-    def __init__(self,app):
+    def __init__(self,app,callback):
         self.App = app
+        self.Callback = callback
 
     def create_window(self):
         self.App.iconify()
@@ -51,7 +52,6 @@ class Screenshot():
     def get_screenshot(self,event):
         if self.canvas.coords(self.rect) != []:
             self.coordinates = self.canvas.coords(self.rect)
-            print(self.coordinates)
             self.Window.destroy()
             self.App.iconify()
 
@@ -59,9 +59,9 @@ class Screenshot():
 
             self.screenshot = ImageGrab.grab()
             self.crop = self.screenshot.crop(self.coordinates)
-            self.crop.save("image.png")
 
             self.App.deiconify()
+            return self.Callback(self.crop)
 
     def exit(self,event):
         self.Window.destroy()

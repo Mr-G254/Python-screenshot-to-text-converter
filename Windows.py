@@ -1,9 +1,13 @@
 from customtkinter import*
+from tkinter import filedialog
 from PIL import Image
+from Tools import Screenshot
+import pyperclip as pc
 
 class Image_Frame():
-    def __init__(self,frame):
+    def __init__(self,frame,app):
         self.master = frame
+        self.App = app
 
         self.img0 = CTkImage(Image.open("Icons\\ad_image.png"),size=(22,22))
         self.img1 = CTkImage(Image.open("Icons\capture.png"),size=(23,23))
@@ -12,15 +16,18 @@ class Image_Frame():
         self.img4 = CTkImage(Image.open("Icons\convert.png"),size=(23,23))
         self.img5 = CTkImage(Image.open("Icons\\next.png"),size=(22,22))
 
+        self.Row = 0
+        self.Screenshot = Screenshot(app,self.add_image)
+
         self.Frame = CTkFrame(self.master,width=1054,height=600,fg_color="#58001D",corner_radius=0)
 
         self.text = CTkLabel(self.Frame,text="Convert images to text(Lyrics)",width=1100,height=40,fg_color="#58001D",font=('Times',19))
         self.text.place(x=-46,y=0)
 
-        self.browse = CTkButton(self.Frame,width=140,height=32,text="Browse",anchor=W,font=('Times',16),image=self.img0,compound=LEFT,fg_color="#790028",border_width=0,hover_color="#4F0018",corner_radius=6)
+        self.browse = CTkButton(self.Frame,width=140,height=32,text="Browse",anchor=W,font=('Times',16),image=self.img0,compound=LEFT,fg_color="#790028",border_width=0,hover_color="#4F0018",corner_radius=6,command=self.browse_file)
         self.browse.place(x=67,y=40)
 
-        self.screen = CTkButton(self.Frame,width=140,height=32,text="Screenshot",anchor=E,font=('Times',16),image=self.img1,compound=RIGHT,fg_color="#790028",border_width=0,hover_color="#4F0018",corner_radius=6)
+        self.screen = CTkButton(self.Frame,width=140,height=32,text="Screenshot",anchor=E,font=('Times',16),image=self.img1,compound=RIGHT,fg_color="#790028",border_width=0,hover_color="#4F0018",corner_radius=6,command=self.get_screenshot)
         self.screen.place(x=212,y=40)
        
         self.frame_1  = CTkFrame(self.Frame,width=400,height=510,fg_color="#790028",corner_radius=10)
@@ -29,13 +36,13 @@ class Image_Frame():
         self.text_1 = CTkLabel(self.frame_1,text="Images",width=390,height= 25,fg_color="#790028",font=('Times',18))
         self.text_1.place(x=5,y=5)
 
-        img_frame = CTkScrollableFrame(self.frame_1,width=370,height=455,fg_color="#4F0018",corner_radius=10)
-        img_frame.place(x=2,y=33)
+        self.img_frame = CTkScrollableFrame(self.frame_1,width=370,height=455,fg_color="#4F0018",corner_radius=10)
+        self.img_frame.place(x=2,y=33)
 
-        self.copy = CTkButton(self.Frame,width=120,height=32,text="Copy",anchor=W,font=('Times',16),compound=LEFT,image=self.img2,fg_color="#790028",border_width=0,hover_color="#4F0018",corner_radius=6)
+        self.copy = CTkButton(self.Frame,width=120,height=32,text="Copy",anchor=W,font=('Times',16),compound=LEFT,image=self.img2,fg_color="#790028",border_width=0,hover_color="#4F0018",corner_radius=6,command= self.copy_text)
         self.copy.place(x=760,y=40)
 
-        self.clear = CTkButton(self.Frame,width=120,height=32,text="Clear",anchor=E,font=('Times',16),compound=RIGHT,image=self.img3,fg_color="#790028",border_width=0,hover_color="#4F0018",corner_radius=6)
+        self.clear = CTkButton(self.Frame,width=120,height=32,text="Clear",anchor=E,font=('Times',16),compound=RIGHT,image=self.img3,fg_color="#790028",border_width=0,hover_color="#4F0018",corner_radius=6,command= lambda: self.text_area.delete(0.0,END))
         self.clear.place(x=885,y=40)
 
         self.frame_2  = CTkFrame(self.Frame,width=320,height=510,fg_color="#790028",corner_radius=10)
@@ -53,7 +60,7 @@ class Image_Frame():
         self.conv = CTkButton(self.Frame,width=150,height=32,text="Convert",font=('Times',16),compound=RIGHT,fg_color="#790028",border_width=0,hover_color="#4F0018",corner_radius=6)
         self.conv.place(x=491,y=521)
 
-        self.next = CTkButton(self.Frame,width=150,height=32,text="Next",font=('Times',16),compound=RIGHT,fg_color="#790028",border_width=0,hover_color="#4F0018",corner_radius=6)
+        self.next = CTkButton(self.Frame,width=150,height=32,text="Next",font=('Times',16),compound=RIGHT,fg_color="#790028",state=DISABLED,border_width=0,hover_color="#4F0018",corner_radius=6)
         self.next.place(x=491,y=558)
 
     def place(self):
@@ -61,3 +68,41 @@ class Image_Frame():
 
     def hide(self):
         self.Frame.place_forget()
+
+    def copy_text(self):
+        pc.copy(self.text_area.get(0.0,END))
+        self.copy.configure(text="Copied")
+
+    
+    def browse_file(self):
+        self.file_location = filedialog.askopenfilenames(filetypes=[('PNG','.png'),('JPG','.jpg')]) 
+        if self.file_location:
+            for i in self.file_location:
+                self.image = Image.open(i)
+                self.add_image(self.image)
+
+    def get_screenshot(self):
+        self.image = self.Screenshot.create_window()
+
+
+    def add_image(self,image):
+        self.width,self.height = image.size
+        
+        if self.width > 360:
+            self.perc = ((self.width-360)/self.width)*100
+
+            self.width = 360
+            self.height = ((100-self.perc)/100)*self.height
+
+        self.img = CTkImage(image,size=(self.width,self.height))
+
+        self.image_frame = CTkFrame(self.img_frame,width=self.width,height=self.height,fg_color="#790028",corner_radius=0)
+        self.image_frame.grid(row=self.Row,column=0,pady=5,padx=5)
+
+        self.image_label = CTkLabel(self.image_frame,image = self.img,text='')
+        self.image_label.place(x=0,y=0)
+
+        self.check = CTkCheckBox(self.image_frame,height=30,width=30,corner_radius=50,text='')
+        self.check.place(x=(self.width-30),y=(self.height-30))
+
+        self.Row= self.Row + 1

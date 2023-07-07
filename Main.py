@@ -111,7 +111,7 @@ class Main_Window():
         self.text_4.bind('<Enter>',lambda event: self.highlight_tool(event,self.restore_frame))
         self.text_4.bind('<Leave>',lambda event: self.unhighlight_tool(event,self.restore_frame))
 
-        self.Img_Frame = Image_Frame(self.Frame)
+        self.Img_Frame = Image_Frame(self.Frame,self.App)
         self.frames.append(self.Img_Frame)
 
         self.App.mainloop()
