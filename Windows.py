@@ -1,11 +1,27 @@
 from customtkinter import*
 from tkinter import filedialog
 from PIL import Image
-from Tools import Screenshot
+from Tools import Image_to_text,Screenshot
 import pyperclip as pc
 
-class Image_Frame():
+class Splash_Frame():
+    def __init__(self,app):
+        app.configure(fg_color="#58001D")
+        app.geometry('600x200+400+200')
+        app.overrideredirect(True)
+
+        self.label = CTkLabel(app,width=600,height=200,text="Lyrics Editor v2.0",font=('Times',35))
+        self.label.place(x=0,y=0)
+        app.update()
+
+    # def destroy(self):
+    #     self.splash.destroy()
+
+
+class Image_Frame(Splash_Frame):
     def __init__(self,frame,app):
+        self.Image_converter = Image_to_text()
+
         self.master = frame
         self.App = app
 
@@ -40,7 +56,6 @@ class Image_Frame():
         self.text_1.place(x=5,y=5)
 
         self.all = CTkCheckBox(self.frame_1,text="All",font=('Times',15),corner_radius=50,fg_color="#790028",height=25,checkbox_height=20,checkbox_width=20,onvalue='All',offvalue='None',command=lambda :self.select_all(self.all))
-        self.all.place(x=340,y=5)
 
         self.img_frame = CTkScrollableFrame(self.frame_1,width=370,height=455,fg_color="#4F0018",corner_radius=10)
         self.img_frame.place(x=2,y=33)
@@ -63,13 +78,14 @@ class Image_Frame():
         self.text_area = CTkTextbox(self.lyr_frame,width=311,height=465,font=('Times',19),wrap='word',border_spacing=0,fg_color="#4F0018",corner_radius=10)
         self.text_area.place(x=2,y=2)
 
-        self.conv = CTkButton(self.Frame,width=150,height=32,text="Convert",font=('Times',16),compound=RIGHT,fg_color="#790028",border_width=0,hover_color="#4F0018",corner_radius=6)
+        self.conv = CTkButton(self.Frame,width=150,height=32,text="Convert (0)",font=('Times',16),compound=RIGHT,fg_color="#790028",border_width=0,hover_color="#4F0018",text_color_disabled="white",corner_radius=6,command=self.convert_img_to_text)
         self.conv.place(x=491,y=521)
 
-        self.next = CTkButton(self.Frame,width=150,height=32,text="Next",font=('Times',16),compound=RIGHT,fg_color="#790028",state=DISABLED,border_width=0,hover_color="#4F0018",corner_radius=6)
+        self.next = CTkButton(self.Frame,width=150,height=32,text="Next",font=('Times',16),compound=RIGHT,fg_color="#790028",state=DISABLED,border_width=0,hover_color="#4F0018",text_color_disabled="white",corner_radius=6)
         self.next.place(x=491,y=558)
 
     def place(self):
+        self.Frame.tkraise()
         self.Frame.place(x=46,y=0)
 
     def hide(self):
@@ -99,20 +115,21 @@ class Image_Frame():
             self.height = ((100-self.perc)/100)*self.height
 
         img = CTkImage(image,size=(self.width,self.height))
-        self.all_images.append(img)
+        self.all_images.append(image)
 
-        self.image_frame = CTkFrame(self.img_frame,width=self.width,height=self.height,fg_color="#790028",corner_radius=0)
+        self.image_frame = CTkFrame(self.img_frame,width=340,height=self.height,fg_color="#4F0018",corner_radius=0)
         self.image_frame.grid(row=self.Row,column=0,pady=5,padx=5)
 
         self.image_label = CTkLabel(self.image_frame,image = img,text='')
         self.image_label.place(x=0,y=0)
 
         check = CTkCheckBox(self.img_frame,height=25,width=25,fg_color="#4F0018",checkbox_height=20,checkbox_width=20,corner_radius=50,text='',onvalue='on',offvalue='off')
-        check.configure(command=lambda check=check,img=img: self.select_image(check,img))
+        check.configure(command=lambda check=check,image=image: self.select_image(check,image))
         check.grid(row=self.Row,column=1,padx=0,)
         self.check_boxes.append(check)
 
         self.Row= self.Row + 1
+        self.all.place(x=340,y=5)
 
     def select_all(self,button):
         if button.get() == "All":
@@ -129,8 +146,39 @@ class Image_Frame():
 
             self.selected_images.clear()
 
+        self.conv.configure(text=f"Convert ({len(self.selected_images)})")
+
     def select_image(self,button,image):
         if button.get() == 'on':
             self.selected_images.append(image)
         elif button.get() == 'off':
             self.selected_images.remove(image)
+
+        self.conv.configure(text=f"Convert ({len(self.selected_images)})")
+
+    def convert_img_to_text(self):
+        for i in self.check_boxes:
+            i.configure(state=DISABLED)
+
+        self.all.configure(state=DISABLED)
+        self.count = len(self.selected_images)
+        self.conv.configure(fg_color="#4F0018",state=DISABLED)
+
+        if len(self.selected_images) > 0:
+            self.Image_converter.convert(self.selected_images,self.get_converted_text)
+
+    def get_converted_text(self,text,status): 
+        self.text_area.insert(END,text)
+        self.text_area.insert(END,"\n")
+
+        if status == "Done":
+            self.count = self.count - 1
+
+        if self.count==0:
+            self.selected_images.clear()
+            for i in self.check_boxes:
+                i.deselect()
+
+            self.all.deselect()
+            self.conv.configure(fg_color="#790028",state=NORMAL,text=f"Convert ({len(self.selected_images)})")
+

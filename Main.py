@@ -1,14 +1,18 @@
+from Windows import Splash_Frame,Image_Frame
 from customtkinter import*
 from tkinter import ttk
 from PIL import Image
-from Windows import Image_Frame
 
 class Main_Window():
     def __init__(self):       
         self.App = CTk()
-        self.App.title("Lyrics Editor")
-        self.App.geometry('1100x600+125+70')
-        self.App.resizable(False,False)
+
+        self.splash = Splash_Frame(self.App)
+        self.Frame = CTkFrame(self.App,width=1100,height=600,fg_color="#58001D",corner_radius=0) # "#4F0018"
+        self.Img_Frame = Image_Frame(self.Frame,self.App)
+        
+        self.frames = []
+        self.frames.append(self.Img_Frame)
 
         self.img0 = CTkImage(Image.open("Icons\home.png"),size=(26,26))
         self.img1 = CTkImage(Image.open("Icons\image.png"),size=(26,26))
@@ -20,10 +24,10 @@ class Main_Window():
         self.img5 = CTkImage(Image.open("Icons\\restore.png"),size=(128,128))
 
         self.menu_buttons = []
-        self.frames = []
+        
 
-        self.Frame = CTkFrame(self.App,width=1100,height=600,fg_color="#58001D",corner_radius=0) # "#4F0018"
-        self.Frame.place(x=0,y=0)
+        
+        
 
         self.menubar = CTkFrame(self.Frame,width=45,height=600,fg_color="#790028",corner_radius=0)
         self.menubar.place(x=0,y=0)
@@ -111,8 +115,12 @@ class Main_Window():
         self.text_4.bind('<Enter>',lambda event: self.highlight_tool(event,self.restore_frame))
         self.text_4.bind('<Leave>',lambda event: self.unhighlight_tool(event,self.restore_frame))
 
-        self.Img_Frame = Image_Frame(self.Frame,self.App)
-        self.frames.append(self.Img_Frame)
+        self.Frame.place(x=0,y=0)
+
+        self.App.overrideredirect(False)
+        self.App.title("Lyrics Editor")
+        self.App.geometry('1100x600+125+70')
+        self.App.resizable(False,False)
 
         self.App.mainloop()
 

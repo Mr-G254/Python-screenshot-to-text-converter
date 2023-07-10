@@ -1,7 +1,9 @@
 from customtkinter import*
 from tkinter import*
-from PIL import Image,ImageGrab
+from PIL import ImageGrab
 from time import sleep
+import numpy as np
+from threading import Thread
 
 class Screenshot():
     def __init__(self,app,callback):
@@ -66,3 +68,22 @@ class Screenshot():
     def exit(self,event):
         self.Window.destroy()
         self.App.deiconify()
+
+
+class Image_to_text():
+    def __init__(self):
+        import easyocr
+
+        self.reader = easyocr.Reader(['en'])
+
+    def convert(self,image,callback):
+        thread = Thread(target=self.convert_thread,args=(image,callback),daemon=True)
+        thread.start()
+
+    def convert_thread(self,images,callback):
+        for i in images:
+            result = self.reader.readtext(np.array(i), paragraph=True ,detail= 0)
+            for i in result:
+                callback(i,"")
+
+            callback('',"Done")
