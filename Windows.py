@@ -13,14 +13,12 @@ class Splash_Frame():
         self.label = CTkLabel(app,width=600,height=200,text="Lyrics Editor v2.0",font=('Times',35))
         self.label.place(x=0,y=0)
         app.update()
-
-    # def destroy(self):
-    #     self.splash.destroy()
+        app.tkraise()
 
 
-class Image_Frame(Splash_Frame):
+class Image_Frame():
     def __init__(self,frame,app):
-        self.Image_converter = Image_to_text()
+        # self.Image_converter = Image_to_text()
 
         self.master = frame
         self.App = app
@@ -63,7 +61,7 @@ class Image_Frame(Splash_Frame):
         self.copy = CTkButton(self.Frame,width=120,height=32,text="Copy",anchor=W,font=('Times',16),compound=LEFT,image=self.img2,fg_color="#790028",border_width=0,hover_color="#4F0018",corner_radius=6,command= self.copy_text)
         self.copy.place(x=760,y=40)
 
-        self.clear = CTkButton(self.Frame,width=120,height=32,text="Clear",anchor=E,font=('Times',16),compound=RIGHT,image=self.img3,fg_color="#790028",border_width=0,hover_color="#4F0018",corner_radius=6,command= lambda: self.text_area.delete(0.0,END))
+        self.clear = CTkButton(self.Frame,width=120,height=32,text="Clear",anchor=E,font=('Times',16),compound=RIGHT,image=self.img3,fg_color="#790028",border_width=0,hover_color="#4F0018",corner_radius=6,command= self.clear_text)
         self.clear.place(x=885,y=40)
 
         self.frame_2  = CTkFrame(self.Frame,width=320,height=510,fg_color="#790028",corner_radius=10)
@@ -77,11 +75,12 @@ class Image_Frame(Splash_Frame):
 
         self.text_area = CTkTextbox(self.lyr_frame,width=311,height=465,font=('Times',19),wrap='word',border_spacing=0,fg_color="#4F0018",corner_radius=10)
         self.text_area.place(x=2,y=2)
+        self.text_area.bind('<KeyRelease>',lambda event: self.check_textarea(event))
 
         self.conv = CTkButton(self.Frame,width=150,height=32,text="Convert (0)",font=('Times',16),compound=RIGHT,fg_color="#790028",border_width=0,hover_color="#4F0018",text_color_disabled="white",corner_radius=6,command=self.convert_img_to_text)
         self.conv.place(x=491,y=521)
 
-        self.next = CTkButton(self.Frame,width=150,height=32,text="Next",font=('Times',16),compound=RIGHT,fg_color="#790028",state=DISABLED,border_width=0,hover_color="#4F0018",text_color_disabled="white",corner_radius=6)
+        self.next = CTkButton(self.Frame,width=150,height=32,text="Next",font=('Times',16),compound=RIGHT,fg_color="#4F0018",state=DISABLED,border_width=0,hover_color="#4F0018",text_color_disabled="white",corner_radius=6)
         self.next.place(x=491,y=558)
 
     def place(self):
@@ -95,6 +94,10 @@ class Image_Frame(Splash_Frame):
         pc.copy(self.text_area.get(0.0,END))
         self.copy.configure(text="Copied")
 
+    def clear_text(self):
+        self.text_area.delete(0.0,END)
+        self.next.configure(fg_color="#4F0018",state=DISABLED)
+        
     def browse_file(self):
         self.file_location = filedialog.askopenfilenames(filetypes=[('PNG','.png'),('JPG','.jpg')]) 
         if self.file_location:
@@ -157,19 +160,21 @@ class Image_Frame(Splash_Frame):
         self.conv.configure(text=f"Convert ({len(self.selected_images)})")
 
     def convert_img_to_text(self):
-        for i in self.check_boxes:
-            i.configure(state=DISABLED)
-
-        self.all.configure(state=DISABLED)
-        self.count = len(self.selected_images)
-        self.conv.configure(fg_color="#4F0018",state=DISABLED)
-
         if len(self.selected_images) > 0:
+            for i in self.check_boxes:
+                i.configure(state=DISABLED)
+
+            self.all.configure(state=DISABLED)
+            self.count = len(self.selected_images)
+            self.conv.configure(fg_color="#4F0018",state=DISABLED)
+
             self.Image_converter.convert(self.selected_images,self.get_converted_text)
 
     def get_converted_text(self,text,status): 
         self.text_area.insert(END,text)
         self.text_area.insert(END,"\n")
+
+        self.next.configure(fg_color="#790028",state=NORMAL)
 
         if status == "Done":
             self.count = self.count - 1
@@ -177,8 +182,39 @@ class Image_Frame(Splash_Frame):
         if self.count==0:
             self.selected_images.clear()
             for i in self.check_boxes:
+                i.configure(state=NORMAL)
                 i.deselect()
 
+            self.all.configure(state=NORMAL)
             self.all.deselect()
             self.conv.configure(fg_color="#790028",state=NORMAL,text=f"Convert ({len(self.selected_images)})")
 
+    def check_textarea(self,Event):
+        if int(len(self.text_area.get(0.0,END))-1) > 0:
+            self.next.configure(fg_color="#790028",state=NORMAL)
+        else:
+            self.next.configure(fg_color="#4F0018",state=DISABLED)
+
+
+class Lyrics_Frame():
+    def __init__(self,frame,app):
+        self.master = frame
+        self.App = app
+
+        self.Frame = CTkFrame(self.master,width=1054,height=600,fg_color="#58001D",corner_radius=0)
+
+        self.ribbon = CTkFrame(self.Frame,fg_color="#790028",width=1044,height=100,corner_radius=5)
+        self.ribbon.place(x=4,y=5)
+
+        self.font = CTkComboBox(self.ribbon,values=['Times','Helvitica'],fg_color=['#F9F9FA', '#343638'],font=('Times',15),border_width=0,corner_radius=0)
+        self.font.place(x=10,y=10)
+
+        self.size = CTkEntry(self.ribbon,fg_color=['#F9F9FA', '#343638'],width=30,height=28,font=('Times',15),border_width=0,corner_radius=0)
+        self.size.place(x=155,y=10)
+
+    def place(self):
+        self.Frame.tkraise()
+        self.Frame.place(x=46,y=0)
+
+    def hide(self):
+        self.Frame.place_forget()

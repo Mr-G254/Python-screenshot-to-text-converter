@@ -85,5 +85,6 @@ class Image_to_text():
             result = self.reader.readtext(np.array(i), paragraph=True ,detail= 0)
             for i in result:
                 callback(i,"")
+                callback('',"Done")
 
             callback('',"Done")

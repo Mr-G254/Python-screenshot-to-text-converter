@@ -1,4 +1,4 @@
-from Windows import Splash_Frame,Image_Frame
+from Windows import Splash_Frame,Image_Frame,Lyrics_Frame
 from customtkinter import*
 from tkinter import ttk
 from PIL import Image
@@ -9,10 +9,13 @@ class Main_Window():
 
         self.splash = Splash_Frame(self.App)
         self.Frame = CTkFrame(self.App,width=1100,height=600,fg_color="#58001D",corner_radius=0) # "#4F0018"
+
         self.Img_Frame = Image_Frame(self.Frame,self.App)
+        self.Ly_Frame = Lyrics_Frame(self.Frame,self.App)
         
         self.frames = []
         self.frames.append(self.Img_Frame)
+        self.frames.append(self.Ly_Frame)
 
         self.img0 = CTkImage(Image.open("Icons\home.png"),size=(26,26))
         self.img1 = CTkImage(Image.open("Icons\image.png"),size=(26,26))
@@ -24,10 +27,6 @@ class Main_Window():
         self.img5 = CTkImage(Image.open("Icons\\restore.png"),size=(128,128))
 
         self.menu_buttons = []
-        
-
-        
-        
 
         self.menubar = CTkFrame(self.Frame,width=45,height=600,fg_color="#790028",corner_radius=0)
         self.menubar.place(x=0,y=0)
@@ -40,7 +39,7 @@ class Main_Window():
         self.image.place(x=0,y=45)
         self.menu_buttons.append(self.image)
 
-        self.lyric = CTkButton(self.menubar,width=44,height=45,text="",fg_color="#790028",corner_radius=0,image=self.img2,hover_color="#A00035",command= lambda: self.select_button(self.lyric))
+        self.lyric = CTkButton(self.menubar,width=44,height=45,text="",fg_color="#790028",corner_radius=0,image=self.img2,hover_color="#A00035",command= lambda: [self.select_button(self.lyric),self.Ly_Frame.place()])
         self.lyric.place(x=0,y=90)
         self.menu_buttons.append(self.lyric)
 
@@ -59,16 +58,19 @@ class Main_Window():
         self.image_frame.place(x=165,y=100)
         self.image_frame.bind('<Enter>',lambda event: self.highlight_tool(event,self.image_frame))
         self.image_frame.bind('<Leave>',lambda event: self.unhighlight_tool(event,self.image_frame))
+        self.image_frame.bind('<Button-1>',lambda event: self.open_image_converter(event))
 
         self.image_1 = CTkLabel(self.image_frame,image=self.img1a,text="",fg_color="#790028")
         self.image_1.place(x=60,y=5)
         self.image_1.bind('<Enter>',lambda event: self.highlight_tool(event,self.image_frame))
         self.image_1.bind('<Leave>',lambda event: self.unhighlight_tool(event,self.image_frame))
+        self.image_1.bind('<Button-1>',lambda event: self.open_image_converter(event))
 
         self.text_1 = CTkLabel(self.image_frame,font=('Times',18),text="Convert images to text",width=230,fg_color="#790028")
         self.text_1.place(x=10,y=140)
         self.text_1.bind('<Enter>',lambda event: self.highlight_tool(event,self.image_frame))
         self.text_1.bind('<Leave>',lambda event: self.unhighlight_tool(event,self.image_frame))
+        self.text_1.bind('<Button-1>',lambda event: self.open_image_converter(event))
 
         self.lyric_frame = CTkFrame(self.Frame,width=250,height=170,corner_radius=7,fg_color="#790028")
         self.lyric_frame.place(x=425,y=100)
@@ -130,6 +132,10 @@ class Main_Window():
                 i.configure(fg_color="#58001D",state=DISABLED)
             else:
                 i.configure(fg_color="#790028",state=NORMAL)
+    
+    def open_image_converter(self,Event):
+        self.select_button(self.image)
+        self.Img_Frame.place()
 
     def home_button(self):
         for i in self.frames:
