@@ -1,5 +1,5 @@
 from customtkinter import*
-from tkinter import filedialog
+from tkinter import filedialog,ttk
 from PIL import Image
 from Tools import Image_to_text,Screenshot
 import pyperclip as pc
@@ -201,16 +201,56 @@ class Lyrics_Frame():
         self.master = frame
         self.App = app
 
+        self.img0 = CTkImage(Image.open("Icons\\bold.png"),size=(20,20))
+        self.img1 = CTkImage(Image.open("Icons\\italic.png"),size=(20,20))
+        self.img2 = CTkImage(Image.open("Icons\\underline.png"),size=(20,20))
+        self.img3 = CTkImage(Image.open("Icons\\strike.png"),size=(24,24))
+        self.img4 = CTkImage(Image.open("Icons\\align-left.png"),size=(24,24))
+        self.img5 = CTkImage(Image.open("Icons\\align-right.png"),size=(24,24))
+        self.img6 = CTkImage(Image.open("Icons\\center-align.png"),size=(24,24))
+        self.img7 = CTkImage(Image.open("Icons\\justify.png"),size=(24,24))
+
         self.Frame = CTkFrame(self.master,width=1054,height=600,fg_color="#58001D",corner_radius=0)
 
-        self.ribbon = CTkFrame(self.Frame,fg_color="#790028",width=1044,height=100,corner_radius=5)
+        self.ribbon = CTkFrame(self.Frame,fg_color="#790028",width=1044,height=80,corner_radius=5)
         self.ribbon.place(x=4,y=5)
 
         self.font = CTkComboBox(self.ribbon,values=['Times','Helvitica'],fg_color=['#F9F9FA', '#343638'],font=('Times',15),border_width=0,corner_radius=0)
-        self.font.place(x=10,y=10)
+        self.font.place(x=8,y=5)
 
         self.size = CTkEntry(self.ribbon,fg_color=['#F9F9FA', '#343638'],width=30,height=28,font=('Times',15),border_width=0,corner_radius=0)
-        self.size.place(x=155,y=10)
+        self.size.place(x=153,y=5)
+
+        self.bold = CTkButton(self.ribbon,height=35,width=40,text='',image=self.img0,fg_color="#790028",hover_color="#58001D",corner_radius=0)
+        self.bold.place(x=8,y=40)
+
+        self.italic = CTkButton(self.ribbon,height=35,width=40,text='',image=self.img1,fg_color="#790028",hover_color="#58001D",corner_radius=0)
+        self.italic.place(x=53,y=40)
+
+        self.underline = CTkButton(self.ribbon,height=35,width=40,text='',image=self.img2,fg_color="#790028",hover_color="#58001D",corner_radius=0)
+        self.underline.place(x=98,y=40)
+
+        self.strike = CTkButton(self.ribbon,height=35,width=40,text='',image=self.img3,fg_color="#790028",hover_color="#58001D",corner_radius=0)
+        self.strike.place(x=143,y=40)
+
+        self.sep = ttk.Separator(self.ribbon,orient=HORIZONTAL)
+        self.sep.place(x=193,y=5,height=70,width=1)
+
+        self.left = CTkButton(self.ribbon,height=35,width=40,text='',image=self.img4,fg_color="#790028",hover_color="#58001D",corner_radius=0)
+        self.left.place(x=203,y=5)
+
+        self.right = CTkButton(self.ribbon,height=35,width=40,text='',image=self.img5,fg_color="#790028",hover_color="#58001D",corner_radius=0)
+        self.right.place(x=238,y=5)
+
+        self.center = CTkButton(self.ribbon,height=35,width=40,text='',image=self.img6,fg_color="#790028",hover_color="#58001D",corner_radius=0)
+        self.center.place(x=203,y=40)
+
+        self.justify = CTkButton(self.ribbon,height=35,width=40,text='',image=self.img7,fg_color="#790028",hover_color="#58001D",corner_radius=0)
+        self.justify.place(x=238,y=40)
+
+        self.editor = CTkTextbox(self.Frame,width=600,height=500,fg_color='white',text_color='black',corner_radius=0)
+        self.editor.place(x=50,y=100)
+
 
     def place(self):
         self.Frame.tkraise()
