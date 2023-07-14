@@ -1,5 +1,5 @@
 from customtkinter import*
-from tkinter import filedialog,ttk
+from tkinter import filedialog,ttk,font
 from PIL import Image
 from Tools import Image_to_text,Screenshot
 import pyperclip as pc
@@ -210,16 +210,24 @@ class Lyrics_Frame():
         self.img6 = CTkImage(Image.open("Icons\\center-align.png"),size=(24,24))
         self.img7 = CTkImage(Image.open("Icons\\justify.png"),size=(24,24))
 
+        self.current_font_size = 20
+        self.current_font_type = "Times New Roman"
+
+        self.align_buttons = []
+
         self.Frame = CTkFrame(self.master,width=1054,height=600,fg_color="#58001D",corner_radius=0)
 
         self.ribbon = CTkFrame(self.Frame,fg_color="#790028",width=1044,height=80,corner_radius=5)
         self.ribbon.place(x=4,y=5)
 
-        self.font = CTkComboBox(self.ribbon,values=['Times','Helvitica'],fg_color=['#F9F9FA', '#343638'],font=('Times',15),border_width=0,corner_radius=0)
+        self.font = CTkComboBox(self.ribbon,values=font.families(),fg_color=['#F9F9FA', '#343638'],font=('Times',15),border_width=0,command=self.change_font_type,corner_radius=0)
         self.font.place(x=8,y=5)
+        self.font.set("Times New Roman")
 
         self.size = CTkEntry(self.ribbon,fg_color=['#F9F9FA', '#343638'],width=30,height=28,font=('Times',15),border_width=0,corner_radius=0)
         self.size.place(x=153,y=5)
+        self.size.bind('<KeyRelease>',lambda event: self.change_font_size(event))
+        self.size.insert(0,"12")
 
         self.bold = CTkButton(self.ribbon,height=35,width=40,text='',image=self.img0,fg_color="#790028",hover_color="#58001D",corner_radius=0)
         self.bold.place(x=8,y=40)
@@ -236,21 +244,49 @@ class Lyrics_Frame():
         self.sep = ttk.Separator(self.ribbon,orient=HORIZONTAL)
         self.sep.place(x=193,y=5,height=70,width=1)
 
-        self.left = CTkButton(self.ribbon,height=35,width=40,text='',image=self.img4,fg_color="#790028",hover_color="#58001D",corner_radius=0)
+        self.left = CTkButton(self.ribbon,height=35,width=40,text='',image=self.img4,fg_color="#790028",hover_color="#58001D",corner_radius=0,command=lambda: self.align_text(self.left,"left"))
         self.left.place(x=203,y=5)
+        self.align_buttons.append(self.left)
 
-        self.right = CTkButton(self.ribbon,height=35,width=40,text='',image=self.img5,fg_color="#790028",hover_color="#58001D",corner_radius=0)
-        self.right.place(x=238,y=5)
+        self.center = CTkButton(self.ribbon,height=35,width=40,text='',image=self.img6,fg_color="#790028",hover_color="#58001D",corner_radius=0,command=lambda: self.align_text(self.center,"center"))
+        self.center.place(x=243,y=5)
+        self.align_buttons.append(self.center)
 
-        self.center = CTkButton(self.ribbon,height=35,width=40,text='',image=self.img6,fg_color="#790028",hover_color="#58001D",corner_radius=0)
-        self.center.place(x=203,y=40)
+        self.right = CTkButton(self.ribbon,height=35,width=40,text='',image=self.img5,fg_color="#790028",hover_color="#58001D",corner_radius=0,command=lambda: self.align_text(self.right,"right"))
+        self.right.place(x=283,y=5)
+        self.align_buttons.append(self.right)
 
-        self.justify = CTkButton(self.ribbon,height=35,width=40,text='',image=self.img7,fg_color="#790028",hover_color="#58001D",corner_radius=0)
-        self.justify.place(x=238,y=40)
-
-        self.editor = CTkTextbox(self.Frame,width=600,height=500,fg_color='white',text_color='black',corner_radius=0)
+        self.editor = CTkTextbox(self.Frame,width=600,height=480,fg_color='white',text_color='black',corner_radius=0,font=("Times",self.current_font_size))
         self.editor.place(x=50,y=100)
 
+        self.left.invoke()
+
+    def change_font_size(self,Event):
+        try:
+            if self.size.get() != "":
+                size = int(self.size.get())
+                self.current_font_size = size
+                self.edit_font()
+
+        except:
+            self.size.delete(0,END)
+            self.size.insert(0,f"{self.current_font_size}")
+
+    def change_font_type(self,value):
+        self.current_font_type = value
+        self.edit_font()
+
+    def edit_font(self):
+        self.editor.configure(font=(self.current_font_type,self.current_font_size))
+
+    def align_text(self,button,value):
+        for i in self.align_buttons:
+            if i == button:
+                i.configure(fg_color="#58001D",state=DISABLED)
+            else:
+                i.configure(fg_color="#790028",state=NORMAL)
+
+        self.editor.configure(justify=value)
 
     def place(self):
         self.Frame.tkraise()
