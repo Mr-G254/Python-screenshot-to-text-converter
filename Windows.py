@@ -18,7 +18,7 @@ class Splash_Frame():
 
 class Image_Frame():
     def __init__(self,frame,app):
-        # self.Image_converter = Image_to_text()
+        self.Image_converter = Image_to_text()
 
         self.master = frame
         self.App = app
@@ -212,6 +212,7 @@ class Lyrics_Frame():
 
         self.current_font_size = 20
         self.current_font_type = "Times New Roman"
+        self.alignment = ""
 
         self.align_buttons = []
 
@@ -258,8 +259,11 @@ class Lyrics_Frame():
 
         self.editor = CTkTextbox(self.Frame,width=600,height=480,fg_color='white',text_color='black',corner_radius=0,font=("Times",self.current_font_size))
         self.editor.place(x=50,y=100)
+        self.editor.bind('<KeyRelease>',lambda event: self.adjust_align)
 
-        self.left.invoke()
+        self.editor.tag_add("All","1.0","end")
+
+        self.center.invoke()
 
     def change_font_size(self,Event):
         try:
@@ -286,7 +290,12 @@ class Lyrics_Frame():
             else:
                 i.configure(fg_color="#790028",state=NORMAL)
 
-        self.editor.configure(justify=value)
+        self.alignment = value
+    
+    def adjust_align(self,Event):
+        self.editor.tag_delete("All")
+        self.editor.tag_add("All","1.0","end")
+        self.editor.tag_config("All",justify=self.alignment)
 
     def place(self):
         self.Frame.tkraise()
