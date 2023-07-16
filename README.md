@@ -8,8 +8,8 @@ Python-screenshot-to-text-converter will be rebuilt to Image to text converter w
   ```
 
 ## Overview
-![](Images\image1.png)
-![](Images\image2.PNG)
+![Image](Images\image1.PNG)
+![Image](Images\image2.PNG)
 
 **Note:** I will not be continuing with these project but feel free to contribute.
 
