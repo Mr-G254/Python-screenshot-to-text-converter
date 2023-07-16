@@ -81,7 +81,7 @@ class Image_Frame():
         self.conv.place(x=491,y=521)
 
         self.next = CTkButton(self.Frame,width=150,height=32,text="Next",font=('Times',16),compound=RIGHT,fg_color="#4F0018",state=DISABLED,border_width=0,hover_color="#4F0018",text_color_disabled="white",corner_radius=6)
-        self.next.place(x=491,y=558)
+        # self.next.place(x=491,y=558)
 
     def place(self):
         self.Frame.tkraise()

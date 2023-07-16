@@ -1,5 +1,15 @@
-# Lyrics Editor v1.0
-Python-screenshot-to-text-converter will be rebuilt to Lyrics Editor v1.0 with some additional features including a better User Interface. Feel free to air your suggestions through the email below.
+# Image to text converter
+Python-screenshot-to-text-converter will be rebuilt to Image to text converter with a better User Interface. You will require an internet connection when running the program for the first time.
+
+## Installation
+- Open the command prompt and run the following command:
+ ``` 
+  pip3 install -r requirements.txt 
+  ```
+
+## Overview
+![](Images\image1.png)
+![](Images\image2.PNG)
 
 **Note:** I will not be continuing with these project but feel free to contribute.
 

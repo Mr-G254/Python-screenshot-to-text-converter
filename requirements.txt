@@ -1,0 +1,4 @@
+customtkinter
+PIL
+pyperclip
+easyocr
