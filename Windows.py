@@ -179,7 +179,9 @@ class Image_Frame():
         if status == "Done":
             self.count = self.count - 1
 
-        if self.count==0:
+        self.conv.configure(fg_color="#4F0018",state=DISABLED,text=f"Convert ({str(self.count)})")
+
+        if self.count == 0:
             self.selected_images.clear()
             for i in self.check_boxes:
                 i.configure(state=NORMAL)
@@ -187,7 +189,7 @@ class Image_Frame():
 
             self.all.configure(state=NORMAL)
             self.all.deselect()
-            self.conv.configure(fg_color="#790028",state=NORMAL,text=f"Convert ({len(self.selected_images)})")
+            self.conv.configure(state=NORMAL,fg_color="#790028")
 
     def check_textarea(self,Event):
         if int(len(self.text_area.get(0.0,END))-1) > 0:
