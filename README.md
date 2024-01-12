@@ -9,6 +9,7 @@ Python-screenshot-to-text-converter will be rebuilt to Image to text converter w
 
 ## Overview
 ![Image1](Images/image1.png)
+
 ![Image2](Images/image2.PNG)
 
 **Note:** I will not be continuing with these project but feel free to contribute.
